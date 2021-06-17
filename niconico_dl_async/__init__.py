@@ -143,28 +143,6 @@ class NicoNico():
 
         return self.data
 
-    async def start_stream_async(self):
-        # 定期的に生きていることをニコニコに伝えるためのもの。
-        if not self.heartbeat_first_data:
-            await self.get_info()
-        self.get = False
-        self.second_get = False
-        c = 0
-
-        async with ClientSession(raise_for_status=True) as session:
-            self._print(
-                "Starting heartbeat ... : https://api.dmc.nico/api/sessions?_format=json"
-            )
-            print(dumps(self.heartbeat_first_data))
-            async with session.post(
-                    f"https://api.dmc.nico/api/sessions?_format=json",
-                    headers=self.headers,
-                    data=dumps(self.heartbeat_first_data)) as res:
-                self.result_data = loads(await res.text())["data"]["session"]
-                self.session_id = self.result_data["id"]
-                self.now_status = f"HeartBeat - {res.status}, next - ..."
-                print("res")
-
     def start_stream(self):
         # 定期的に生きていることをニコニコに伝えるためのもの。
         self.get = False
@@ -183,12 +161,6 @@ class NicoNico():
         print(self.result_data["content_uri"])
 
         self.get = True
-
-        # before = time()
-        # while not self.stop:
-        #     now = time()
-
-        #     if now > before + 30:
 
         return session_id
 
@@ -213,8 +185,6 @@ class NicoNico():
             self.heartbeat_task = perpetualTimer(30, self.wrap_heartbeat,
                                                  session_id)
             self.heartbeat_task.start()
-            # Thread(target=self.start_stream).start()
-            # await self.start_stream_async()
             self.now_downloading = True
 
             # 心臓が動くまで待機。
