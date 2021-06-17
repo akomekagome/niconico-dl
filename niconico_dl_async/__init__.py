@@ -158,8 +158,6 @@ class NicoNico():
         self.result_data = loads(res.text)["data"]["session"]
         session_id = self.result_data["id"]
 
-        print(self.result_data["content_uri"])
-
         self.get = True
 
         return session_id
@@ -171,7 +169,6 @@ class NicoNico():
             headers=self.headers,
             data=dumps({"session": self.result_data}))
 
-        print(res.status_code)
         if res.status_code == 201 or res.status_code == 200:
             self.result_data = loads(res.text)["data"]["session"]
         else:
@@ -191,7 +188,6 @@ class NicoNico():
             while not self.get:
                 pass
 
-            print("return")
             return self.result_data["content_uri"]
         else:
             return self.result_data["content_uri"]
